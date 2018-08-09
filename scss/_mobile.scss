@@ -3,11 +3,23 @@
   .gallery {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
+
+  .portrait {
+    background: url("../img/portrait_small.jpg");
+    width: 150px;
+    height: 150px;
+  }
 }
 // Desktops & Laptops
 @include mediaLg {
   .gallery {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .portrait {
+    background: url("../img/portrait_small.jpg");
+    width: 150px;
+    height: 150px;
   }
 }
 // Tablets & Small Laptops

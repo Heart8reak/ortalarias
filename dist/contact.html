@@ -7,8 +7,17 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
         crossorigin="anonymous">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
 
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+        crossorigin="anonymous">
 
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/main.css">
     <title>Contact Me</title>
 </head>
@@ -59,29 +68,110 @@
             <span class="text-secondary">Me</span>
         </h1>
         <h2 class="sm-heading">
-            This is how you can reach me
         </h2>
-        <div class="boxes">
-            <div>
-                <span class="text-secondary">Email: </span>ortalarias@gmail.com
-            </div>
-            <div>
-                <span class="text-secondary">Phone: </span>555.555.5555
-            </div>
-            <div>
-                <span class="text-secondary">Address: </span>555 Waverly St Yonkers, NY 10701
-            </div>
+        <div class="container form-top">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+                    <div class="panel panel-danger">
+                        <div class="panel-body">
+                            <form id="reused_form">
+                                <div class="form-group">
+                                    <label>
+                                        <i class="fa fa-user" aria-hidden="true"></i> Name</label>
+                                    <input type="text" name="name" class="form-control" placeholder="Enter Name">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
+                                    <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <i class="fa fa-comment" aria-hidden="true"></i> Message</label>
+                                    <textarea rows="3" name="message" class="form-control" placeholder="Type Your Message"></textarea>
+                                </div>
 
+
+                                <div class="form-group">
+                                    <button class="btn btn-raised btn-block btn-danger">Post →</button>
+                                </div>
+                            </form>
+                            <div id="error_message" style="width:100%; height:100%; display:none; ">
+                                <h4>Error</h4>
+                                Sorry there was an error sending your form.
+                            </div>
+                            <div id="success_message" style="width:100%; height:100%; display:none; ">
+                                <h2>Success! Your Message was Sent Successfully.</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </main>
 
     <footer id="main-footer">
-        Copyright &copy; 2018
+        Ortal Arias &copy; 2018
 
     </footer>
 
     <script src="js/main.js"></script>
+    <script>
+        $(function () {
+            function after_form_submitted(data) {
+                if (data.result == 'success') {
+                    $('form#reused_form').hide();
+                    $('#success_message').show();
+                    $('#error_message').hide();
+                }
+                else {
+                    $('#error_message').append('<ul></ul>');
+
+                    jQuery.each(data.errors, function (key, val) {
+                        $('#error_message ul').append('<li>' + key + ':' + val + '</li>');
+                    });
+                    $('#success_message').hide();
+                    $('#error_message').show();
+
+                    //reverse the response on the button
+                    $('button[type="button"]', $form).each(function () {
+                        $btn = $(this);
+                        label = $btn.prop('orig_label');
+                        if (label) {
+                            $btn.prop('type', 'submit');
+                            $btn.text(label);
+                            $btn.prop('orig_label', '');
+                        }
+                    });
+
+                }//else
+            }
+
+            $('#reused_form').submit(function (e) {
+                e.preventDefault();
+
+                $form = $(this);
+                //show some response on the button
+                $('button[type="submit"]', $form).each(function () {
+                    $btn = $(this);
+                    $btn.prop('type', 'button');
+                    $btn.prop('orig_label', $btn.text());
+                    $btn.text('Sending ...');
+                });
+
+
+                $.ajax({
+                    type: "POST",
+                    url: 'handler.php',
+                    data: $form.serialize(),
+                    success: after_form_submitted,
+                    dataType: 'json'
+                });
+
+            });
+        });
+    </script>
 </body>
 
 </html>
